@@ -74,7 +74,7 @@ const start = async () => {
 				return bot.sendMessage(
 					chatId,
 					'Добро пожаловать, пожалуйста пройди регистрацию',
-					req
+					reg
 				)
 			}
 			if (text === "/info") {
