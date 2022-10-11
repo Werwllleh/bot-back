@@ -1,3 +1,5 @@
+const webAppUrl = 'https://chic-lolly-1605d1.netlify.app';
+
 module.exports = {
 	menu: {
 		reply_markup: {
@@ -14,10 +16,7 @@ module.exports = {
 		reply_markup: {
 			keyboard: [
 				[{
-					text: "Регистрация",
-					web_app: {
-						url: "https://193.164.149.140/form.html"
-					}
+					text: "Регистрация", web_app: { url: webAppUrl + '/form' }
 				}],
 			],
 		}

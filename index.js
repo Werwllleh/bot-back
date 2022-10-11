@@ -4,8 +4,53 @@ const bot = new TelegramBot(token, { polling: true });
 const { menu, reg, partners, ourcars, back, profile, editprofile } = require('./keyboards');
 const sequelize = require('./db');
 const Users = require("./models");
+const express = require('express');
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
 
+const app = express();
 
+app.use(fileUpload({
+	createParentPath: true
+}));
+
+app.use(cors());
+
+const port = process.env.PORT || 5000;
+
+app.listen(port, () =>
+	console.log(`App is listening on port ${port}.`)
+);
+
+app.post('/upload', async (req, res) => {
+	try {
+		if (!req.files) {
+			res.send({
+				status: false,
+				message: 'No file uploaded'
+			});
+		} else {
+			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+			let avatar = req.files.avatar;
+
+			//Use the mv() method to place the file in the upload directory (i.e. "uploads")
+			avatar.mv('./uploads/' + avatar.name);
+
+			//send response
+			res.send({
+				status: true,
+				message: 'File is uploaded',
+				data: {
+					name: avatar.name,
+					mimetype: avatar.mimetype,
+					size: avatar.size
+				}
+			});
+		}
+	} catch (err) {
+		res.status(500).send(err);
+	}
+});
 
 const start = async () => {
 
@@ -26,7 +71,11 @@ const start = async () => {
 		const chatId = msg.chat.id;
 		try {
 			if (text === '/start') {
-				return bot.sendMessage(chatId, 'Добро пожаловать', menu)
+				return bot.sendMessage(
+					chatId,
+					'Добро пожаловать, пожалуйста пройди регистрацию',
+					req
+				)
 			}
 			if (text === "/info") {
 				return (
