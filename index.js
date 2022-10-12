@@ -12,6 +12,7 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
 
+
 const app = express();
 
 app.use(express.json());
@@ -37,9 +38,10 @@ app.post('/upload', async (req, res) => {
 	try {
 		const { avatar } = req.files;
 		console.log(avatar);
-		// let count = avatar.name.split(".").length;
+		let count = avatar.name.split(".").length;
 		let extension = avatar.name.split(".");
 		let fileName = uuid.v4() + "." + extension[count - 1];
+		console.log(fileName);
 		fileName.mv(path.resolve(__dirname, "..", "img/users_cars", fileName));
 		console.log(fileName);
 		return res.json(fileName);
