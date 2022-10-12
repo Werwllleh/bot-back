@@ -16,7 +16,7 @@ const path = require("path");
 const app = express();
 
 app.use(express.json());
-app.use(express.static('static'));
+app.use(express.static(path.resolve(__dirname, "..", "bot-back/img/users_cars")));
 app.use(cors());
 
 app.use(fileUpload({}));
