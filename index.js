@@ -10,6 +10,7 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const { log } = require('console');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.listen(port, () =>
 );
 
 app.post('/upload', async (req, res) => {
+	console.log(req);
 	try {
 		if (!req.files) {
 			res.send({
