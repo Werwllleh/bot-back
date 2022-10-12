@@ -19,12 +19,8 @@ const app = express();
 app.use(express.json());
 app.use(express.static('static'));
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(fileUpload({
-	createParentPath: true
-}));
+app.use(fileUpload({}));
 
 const port = process.env.PORT || 5000;
 
