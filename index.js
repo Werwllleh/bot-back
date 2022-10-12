@@ -32,7 +32,7 @@ app.listen(port, () =>
 
 app.post('/upload', async (req, res) => {
 
-	console.log(res.files);
+	console.log(req.files);
 
 	try {
 		if (!req.files) {
