@@ -32,7 +32,7 @@ app.get('/', async (req, res) => {
 	return res.json('work');
 })
 
-app.post('/upload', async (req, res) => {
+app.post('upload', async (req, res) => {
 
 	console.log(req.files);
 
