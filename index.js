@@ -34,16 +34,13 @@ app.get('/api', async (req, res) => {
 
 app.post('/api/upload', async (req, res) => {
 
-	console.log(req.files);
-
 	try {
 		const { avatar } = req.files;
-		console.log(avatar);
+
 		let count = avatar.name.split(".").length;
 		let extension = avatar.name.split(".");
 		let fileName = uuid.v4() + "." + extension[count - 1];
-		console.log(__dirname);
-		console.log(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+
 		try {
 			avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 		} catch (error) {
