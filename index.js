@@ -15,8 +15,12 @@ const app = express();
 app.use(express.json());
 app.use(express.static('static'));
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(fileUpload({}));
+app.use(fileUpload({
+	createParentPath: true
+}));
 
 
 const port = process.env.PORT || 5000;
@@ -34,7 +38,7 @@ app.post('/upload', async (req, res) => {
 			});
 		} else {
 			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-			let carImage = req.files.avatar;
+			let carImage = req.files.carImage;
 
 			//Use the mv() method to place the file in the upload directory (i.e. "uploads")
 			carImage.mv('./img/user_cars' + carImage.name);
