@@ -10,7 +10,7 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const { log } = require('console');
+const uuid = require('uuid');
 
 const app = express();
 
@@ -35,29 +35,14 @@ app.post('/upload', async (req, res) => {
 	console.log(req.files);
 
 	try {
-		if (!req.files) {
-			res.send({
-				status: false,
-				message: 'No file uploaded'
-			});
-		} else {
-			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-			let carImage = req.files.carImage;
+		const { avatar } = req.files;
 
-			//Use the mv() method to place the file in the upload directory (i.e. "uploads")
-			carImage.mv('./img/user_cars' + carImage.name);
-
-			//send response
-			res.send({
-				status: true,
-				message: 'File is uploaded',
-				data: {
-					name: carImage.name,
-					mimetype: carImage.mimetype,
-					size: carImage.size
-				}
-			});
-		}
+		let count = avatar.name.split(".").length;
+		let extension = avatar.name.split(".");
+		let fileName = uuid.v4() + "." + extension[count - 1];
+		fileName.mv(path.resolve(__dirname, "..", "img/users_cars", fileName));
+		console.log(fileName);
+		return res.json(fileName);
 	} catch (err) {
 		res.status(500).send(err);
 	}
