@@ -42,6 +42,7 @@ app.post('/upload', async (req, res) => {
 		let extension = avatar.name.split(".");
 		let fileName = uuid.v4() + "." + extension[count - 1];
 		console.log(fileName);
+		console.log(path.resolve(__dirname, "..", "img/users_cars", fileName));
 		fileName.mv(path.resolve(__dirname, "..", "img/users_cars", fileName));
 		console.log(fileName);
 		return res.json(fileName);
