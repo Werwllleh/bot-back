@@ -5,10 +5,10 @@ module.exports = {
 		reply_markup: {
 			// Добавляем все кнопки
 			keyboard: [
-				[{ text: 'Мероприятия' }, { text: 'Партнеры' }],
+				[{ text: 'Встречи' }, { text: 'Партнеры' }],
 				[{ text: 'Наши авто' }, { text: 'Продажа авто' }],
-				[{ text: 'Запросить помощь' }, { text: 'Поддержать клуб' },],
-				[{ text: 'Профиль' }],
+				[{ text: 'Поиск авто' }, { text: 'Запросить помощь' }],
+				[{ text: 'Профиль' }, { text: 'Поддержать клуб' }],
 			],
 		}
 	},
@@ -25,10 +25,7 @@ module.exports = {
 		reply_markup: {
 			inline_keyboard: [
 				[{
-					text: "Список партнеров",
-					web_app: {
-						url: "https://193.164.149.140/partners.html"
-					}
+					text: "Список партнеров", web_app: { url: webAppUrl + '/partners' }
 				}],
 			],
 		}
@@ -37,10 +34,16 @@ module.exports = {
 		reply_markup: {
 			inline_keyboard: [
 				[{
-					text: "Автомобили участников",
-					web_app: {
-						url: "https://193.164.149.140/ourcars.html"
-					}
+					text: "Автомобили участников клуба", web_app: { url: webAppUrl + '/ourcars' }
+				}],
+			],
+		}
+	},
+	searchcar: {
+		reply_markup: {
+			inline_keyboard: [
+				[{
+					text: "Поиск автомобиля участника клуба", web_app: { url: webAppUrl + '/searchcar' }
 				}],
 			],
 		}
