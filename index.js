@@ -28,6 +28,10 @@ app.listen(port, () =>
 	console.log(`App is listening on port ${port}.`)
 );
 
+app.get('/', async (req, res) => {
+	return res.json('work');
+})
+
 app.post('/upload', async (req, res) => {
 
 	console.log(req.files);
