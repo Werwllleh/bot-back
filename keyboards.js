@@ -34,7 +34,7 @@ module.exports = {
 		reply_markup: {
 			inline_keyboard: [
 				[{
-					text: "Автомобили участников клуба", web_app: { url: webAppUrl + '/ourcars' }
+					text: "Автомобили участников клуба", web_app: { url: webAppUrl }
 				}],
 			],
 		}
