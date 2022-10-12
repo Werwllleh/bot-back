@@ -9,6 +9,7 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 
 const app = express();
 
