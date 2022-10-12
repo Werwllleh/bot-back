@@ -28,35 +28,7 @@ app.listen(port, () =>
 	console.log(`App is listening on port ${port}.`)
 );
 
-app.post('/upload', async (req, res) => {
-	try {
-		if (!req.files) {
-			res.send({
-				status: false,
-				message: 'No file uploaded'
-			});
-		} else {
-			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-			let carImage = req.files.carImage;
 
-			//Use the mv() method to place the file in the upload directory (i.e. "uploads")
-			carImage.mv('./img/user_cars' + carImage.name);
-
-			//send response
-			res.send({
-				status: true,
-				message: 'File is uploaded',
-				data: {
-					name: carImage.name,
-					mimetype: carImage.mimetype,
-					size: carImage.size
-				}
-			});
-		}
-	} catch (err) {
-		res.status(500).send(err);
-	}
-})
 
 const start = async () => {
 
