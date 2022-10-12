@@ -16,7 +16,7 @@ const path = require("path");
 const app = express();
 
 app.use(express.json());
-app.use("image", express.static("img"));
+app.use("/api/image", express.static("img"));
 
 app.use(cors());
 
