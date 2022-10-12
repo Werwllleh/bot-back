@@ -44,7 +44,12 @@ app.post('/upload', async (req, res) => {
 		let fileName = uuid.v4() + "." + extension[count - 1];
 		console.log(__dirname);
 		console.log(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
-		fileName.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+		try {
+			fileName.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+		} catch (error) {
+			console.log(error);
+		}
+
 		console.log(fileName);
 		return res.json(fileName);
 	} catch (err) {
