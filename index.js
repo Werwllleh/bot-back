@@ -4,17 +4,20 @@ const bot = new TelegramBot(token, { polling: true });
 const { menu, reg, partners, ourcars, searchcar, profile, editprofile } = require('./keyboards');
 const sequelize = require('./db');
 const Users = require("./models");
+
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 
-app.use(fileUpload({
-	createParentPath: true
-}));
-
+app.use(express.json());
+app.use(express.static('static'));
 app.use(cors());
+
+app.use(fileUpload({}));
+
 
 const port = process.env.PORT || 5000;
 
@@ -31,26 +34,26 @@ app.post('/upload', async (req, res) => {
 			});
 		} else {
 			//Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-			let avatar = req.files.avatar;
+			let carImage = req.files.avatar;
 
 			//Use the mv() method to place the file in the upload directory (i.e. "uploads")
-			avatar.mv('./uploads/' + avatar.name);
+			carImage.mv('./img/user_cars' + carImage.name);
 
 			//send response
 			res.send({
 				status: true,
 				message: 'File is uploaded',
 				data: {
-					name: avatar.name,
-					mimetype: avatar.mimetype,
-					size: avatar.size
+					name: carImage.name,
+					mimetype: carImage.mimetype,
+					size: carImage.size
 				}
 			});
 		}
 	} catch (err) {
 		res.status(500).send(err);
 	}
-});
+})
 
 const start = async () => {
 
