@@ -9,7 +9,6 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const fs = require('fs');
-const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const path = require("path");
 
@@ -41,7 +40,7 @@ app.post('/upload', async (req, res) => {
 		console.log(__dirname);
 		console.log(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 		try {
-			fileName.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+			avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 		} catch (error) {
 			console.log(error);
 		}
