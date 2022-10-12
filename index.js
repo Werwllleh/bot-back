@@ -22,7 +22,6 @@ app.use(fileUpload({
 	createParentPath: true
 }));
 
-
 const port = process.env.PORT || 5000;
 
 app.listen(port, () =>
