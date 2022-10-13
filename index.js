@@ -67,7 +67,7 @@ const start = async () => {
 					fs.access(
 						path.basename(filePath),
 						constants.F_OK, (err) => {
-							console.log(`${file} ${err ? 'does not exist' : 'exists'}`);
+							console.log(`${filePath} ${err ? 'does not exist' : 'exists'}`);
 						}
 					);
 				} catch (error) {
