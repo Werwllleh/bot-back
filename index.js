@@ -40,7 +40,10 @@ app.post('/api/upload', async (req, res) => {
 
 		const type = avatar.name.split('.').pop();
 
-		let fileName = uuid.v4() + "." + type;
+		// let fileName = uuid.v4() + "." + type;
+
+		let fileName = 'foto' + "." + type;
+
 
 		try {
 			avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
