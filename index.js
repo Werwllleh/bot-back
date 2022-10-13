@@ -35,7 +35,11 @@ app.get('/api', async (req, res) => {
 app.post('/api/upload', async (req, res) => {
 
 	try {
+
 		const { avatar } = req.files;
+
+		const type = avatar.name.split('.').pop();
+
 
 		let count = avatar.name.split(".").length;
 		let extension = avatar.name.split(".");
