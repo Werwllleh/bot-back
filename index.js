@@ -32,32 +32,6 @@ app.get('/api', async (req, res) => {
 	return res.json('work');
 })
 
-app.post('/api/upload', async (req, res) => {
-
-	try {
-
-		const { avatar } = req.files;
-
-		const type = avatar.name.split('.').pop();
-
-		// let fileName = uuid.v4() + "." + type;
-
-		let fileName = 'foto' + "." + type;
-
-
-		try {
-			avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
-		} catch (error) {
-			console.log(error);
-		}
-
-		console.log(fileName);
-		return res.json(fileName);
-	} catch (err) {
-		res.status(500).send(err);
-	}
-})
-
 const start = async () => {
 
 	try {
@@ -75,6 +49,32 @@ const start = async () => {
 	bot.on('message', async (msg) => {
 		const text = msg.text;
 		const chatId = msg.chat.id;
+
+		app.post('/api/upload', async (req, res) => {
+
+			try {
+
+				const { avatar } = req.files;
+
+				const type = avatar.name.split('.').pop();
+
+				// let fileName = uuid.v4() + "." + type;
+
+				let fileName = chatId + "." + type;
+
+				try {
+					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+				} catch (error) {
+					console.log(error);
+				}
+
+				console.log(fileName);
+				return res.json(fileName);
+			} catch (err) {
+				res.status(500).send(err);
+			}
+		})
+
 		try {
 			if (text === '/start') {
 				return bot.sendMessage(
