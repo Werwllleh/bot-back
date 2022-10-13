@@ -68,6 +68,12 @@ const start = async () => {
 					types.forEach(el => {
 						if (!(fileName + el)) {
 							avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
+						} else {
+							fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + el), (err) => {
+								if (err) throw err;
+								console.log('Deleted');
+							});
+							avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
 						}
 					})
 				} catch (error) {
