@@ -61,17 +61,6 @@ const start = async () => {
 				// let fileName = uuid.v4() + "." + type;
 
 				let fileName = chatId + "." + type;
-				let filePath = __dirname + `root/bot-back/img/users_cars/` + fileName;
-
-				try {
-					fs.access(
-						path.basename(filePath), (err) => {
-							console.log(`${filePath} ${err ? 'does not exist' : 'exists'}`);
-						}
-					);
-				} catch (error) {
-					console.log(error);
-				}
 
 				try {
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
