@@ -40,9 +40,6 @@ app.post('/api/upload', async (req, res) => {
 
 		const type = avatar.name.split('.').pop();
 
-
-		/* let count = avatar.name.split(".").length;
-		let extension = avatar.name.split("."); */
 		let fileName = uuid.v4() + "." + type;
 
 		try {
