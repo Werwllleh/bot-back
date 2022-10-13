@@ -58,14 +58,16 @@ const start = async () => {
 
 				const type = avatar.name.split('.').pop();
 
-				let fileName = chatId + type;
+				let fileName = chatId + '.' + type;
 
 				try {
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 				} catch (error) {
 					console.log(error);
 				}
+
 				console.log(fileName);
+
 				return res.json(fileName);
 			} catch (err) {
 				res.status(500).send(err);
