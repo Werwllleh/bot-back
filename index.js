@@ -62,16 +62,11 @@ const start = async () => {
 
 				let fileName = chatId;
 
-				console.log(avatar);
-
 				try {
-					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
 				} catch (error) {
 					console.log(error);
 				}
-
-
-
 
 				console.log(fileName);
 				return res.json(fileName);
