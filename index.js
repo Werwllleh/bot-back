@@ -66,7 +66,7 @@ const start = async () => {
 
 				try {
 					types.forEach(el => {
-						if (!fileName + el) {
+						if (!(fileName + el)) {
 							avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
 						}
 					})
