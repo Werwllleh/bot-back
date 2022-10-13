@@ -61,14 +61,6 @@ const start = async () => {
 				let fileName = chatId + type;
 
 				try {
-					await fs.promises.access(path.basename(__dirname, "..", "bot-back/img/users_cars"));
-					console.log('есть');
-				} catch (error) {
-					// The check failed
-					console.log(error);
-				}
-
-				try {
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 				} catch (error) {
 					console.log(error);
