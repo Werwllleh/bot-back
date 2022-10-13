@@ -65,17 +65,7 @@ const start = async () => {
 				let types = [jpg, jpeg, png, heic, heif]
 
 				try {
-					types.forEach(el => {
-						if (!(fileName + el)) {
-							avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
-						} else {
-							fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + el), (err) => {
-								if (err) throw err;
-								console.log('Deleted');
-							});
-							avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
-						}
-					})
+					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
 				} catch (error) {
 					console.log(error);
 				}
