@@ -61,7 +61,9 @@ const start = async () => {
 				// let fileName = uuid.v4() + "." + type;
 
 				let fileName = chatId + "." + type;
-				let filePath = `root/bot-back/img/users_cars/` + fileName;
+				let filePath = __dirname + `root/bot-back/img/users_cars/` + fileName;
+
+				console.log(filePath);
 
 				try {
 					fs.access(
