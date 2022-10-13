@@ -60,10 +60,16 @@ const start = async () => {
 
 				// let fileName = uuid.v4() + "." + type;
 
-				let fileName = chatId + "." + type;
+				let fileName = chatId;
+
+				let types = [jpg, jpeg, png, heic, heif]
 
 				try {
-					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+					types.forEach(el => {
+						if (!fileName + el) {
+							avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName + "." + type));
+						}
+					})
 				} catch (error) {
 					console.log(error);
 				}
