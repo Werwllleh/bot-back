@@ -75,27 +75,28 @@ const start = async () => {
 		})
 
 		app.post("/api/upload/remove", (req, res) => {
-			console.log(req.body.file);
-			let { file } = req.body;
-			console.log(file);
 
-			if (file !== " ") {
-				fs.stat(
-					path.resolve(__dirname, "..", "bot-back/img/users_cars", file),
-					function (err, stats) {
+			try {
+				let { file } = req.body;
+
+				if (file !== " ") {
+					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err, stats) => {
 						console.log(stats); //here we got all information of file in stats variable
 
 						if (err) {
 							return res.json("err");
 						}
 
-						fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), function (err) {
+						fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err) => {
 							if (err) return console.log(err);
 							console.log("file deleted successfully");
 						});
-					}
-				);
+					});
+				}
+			} catch (error) {
+				console.log(error);
 			}
+
 		})
 
 		try {
