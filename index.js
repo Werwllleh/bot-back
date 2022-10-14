@@ -75,9 +75,9 @@ const start = async () => {
 		})
 
 		app.post("/api/upload/remove", (req, res) => {
-			console.log(req.body.file);
 
 			let { file } = req.body;
+			console.log(file);
 
 			if (file !== " ") {
 				fs.stat(
