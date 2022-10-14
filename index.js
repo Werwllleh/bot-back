@@ -68,7 +68,7 @@ const start = async () => {
 				}
 
 				// console.log(fileName);
-				console.log(avatar.name);
+				console.log(avatar);
 
 				return res.json(fileName);
 			} catch (err) {
