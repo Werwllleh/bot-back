@@ -97,7 +97,6 @@ const start = async () => {
 						});
 					}
 				);
-			} else {
 			}
 		});
 
