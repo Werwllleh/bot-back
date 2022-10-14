@@ -58,7 +58,7 @@ const start = async () => {
 
 				const type = avatar.name.split('.').pop();
 
-				let fileName = chatId + ".jpg";
+				let fileName = chatId + "." + type;
 
 				try {
 					console.log(path.basename(`./img/users_cars/${fileName}`));
@@ -75,6 +75,31 @@ const start = async () => {
 				res.status(500).send(err);
 			}
 		})
+
+		app.post("/api/remove", (req, res) => {
+			console.log(req.body.file);
+
+			let { file } = req.body;
+
+			if (file !== " ") {
+				fs.stat(
+					path.resolve(__dirname, "..", "bot-back/img/users_cars", file),
+					function (err, stats) {
+						console.log(stats); //here we got all information of file in stats variable
+
+						if (err) {
+							return res.json("err");
+						}
+
+						fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), function (err) {
+							if (err) return console.log(err);
+							console.log("file deleted successfully");
+						});
+					}
+				);
+			} else {
+			}
+		});
 
 		try {
 			if (text === '/start') {
