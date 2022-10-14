@@ -65,7 +65,6 @@ const start = async () => {
 				} catch (error) {
 					console.log(error);
 				}
-
 				// console.log(fileName);
 				console.log(avatar);
 
