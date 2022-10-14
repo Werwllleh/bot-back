@@ -54,21 +54,22 @@ const start = async () => {
 
 			try {
 
-				const { avatar } = req.files;
+				const { avatar, status } = req.files;
 
 				const type = avatar.name.split('.').pop();
-
-				// let fileName = uuid.v4() + "." + type;
 
 				let fileName = chatId + "." + type;
 
 				try {
+					path.basename(`/img/users_cars/` + fileName);
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 				} catch (error) {
 					console.log(error);
 				}
 
-				console.log(fileName);
+				// console.log(fileName);
+				console.log(status);
+
 				return res.json(fileName);
 			} catch (err) {
 				res.status(500).send(err);
