@@ -58,7 +58,7 @@ const start = async () => {
 
 				const type = avatar.name.split('.').pop();
 
-				let fileName = chatId + "." + type;
+				let fileName = chatId + ".jpg";
 
 				try {
 					console.log(path.basename(`./img/users_cars/${fileName}`));
