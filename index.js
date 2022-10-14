@@ -60,7 +60,7 @@ const start = async () => {
 
 
 				try {
-					const fileName = chatId + ".jpg";
+					let fileName = chatId + ".jpg";
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 				} catch (error) {
 					console.log(error);
