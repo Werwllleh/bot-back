@@ -54,7 +54,7 @@ const start = async () => {
 
 			try {
 
-				const { avatar, status } = req.files;
+				const { avatar } = req.files;
 
 				const type = avatar.name.split('.').pop();
 
@@ -68,7 +68,7 @@ const start = async () => {
 				}
 
 				// console.log(fileName);
-				console.log(req.files);
+				console.log(avatar.name);
 
 				return res.json(fileName);
 			} catch (err) {
