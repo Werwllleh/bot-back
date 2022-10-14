@@ -75,12 +75,12 @@ const start = async () => {
 		})
 
 		app.post("/api/upload/remove", (req, res) => {
-
+			console.log(req.body.file);
 			let { file } = req.body;
 			console.log(file);
 
 			if (file !== " ") {
-				fs.access(
+				fs.stat(
 					path.resolve(__dirname, "..", "bot-back/img/users_cars", file),
 					function (err, stats) {
 						console.log(stats); //here we got all information of file in stats variable
