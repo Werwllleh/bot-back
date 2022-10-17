@@ -8,7 +8,7 @@ const Users = require("./models");
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-const { fs } = require('fs');
+const { access, unlink } = require('fs');
 const uuid = require('uuid');
 const path = require("path");
 
@@ -80,14 +80,14 @@ const start = async () => {
 				let { response } = req.body;
 
 				if (response !== " ") {
-					fs.access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
+					access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 						console.log(err); //here we got all information of file in stats variable
 
 						if (err) {
 							return res.json("err");
 						}
 
-						fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
+						unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 							if (err) return console.log(err);
 							console.log("file deleted successfully");
 						});
