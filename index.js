@@ -79,10 +79,10 @@ const start = async () => {
 		app.post("/api/upload/remove", (req, res) => {
 
 			try {
-				let { avatar } = req.body;
-				console.log(avatar);
+				let { file } = req.body;
+				console.log(req.body);
 
-				if (file !== " ") {
+				/* if (file !== " ") {
 					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err, stats) => {
 						console.log(stats); //here we got all information of file in stats variable
 
@@ -95,7 +95,7 @@ const start = async () => {
 							console.log("file deleted successfully");
 						});
 					});
-				}
+				} */
 			} catch (error) {
 				console.log(error);
 			}
