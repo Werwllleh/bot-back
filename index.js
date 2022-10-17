@@ -79,7 +79,7 @@ const start = async () => {
 
 				if (response !== " ") {
 					access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
-						console.log(err); //here we got all information of file in stats variable
+						//console.log(err); //here we got all information of file in stats variable
 
 						if (err) {
 							return res.json("err");
