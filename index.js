@@ -80,7 +80,7 @@ const start = async () => {
 
 			try {
 				let { file } = req.body;
-				console.log(req.files);
+				console.log(req);
 
 				/* if (file !== " ") {
 					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err, stats) => {
