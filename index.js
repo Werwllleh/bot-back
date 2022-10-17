@@ -50,8 +50,6 @@ const start = async () => {
 		const text = msg.text;
 		const chatId = msg.chat.id;
 
-		console.log(msg);
-
 		app.post('/api/upload', async (req, res) => {
 
 			try {
