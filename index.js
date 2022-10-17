@@ -80,22 +80,21 @@ const start = async () => {
 
 			try {
 				let { response } = req.body;
-				console.log(response);
 
-				/* if (file !== " ") {
-					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err, stats) => {
+				if (response !== " ") {
+					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err, stats) => {
 						console.log(stats); //here we got all information of file in stats variable
 
 						if (err) {
 							return res.json("err");
 						}
 
-						fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err) => {
+						fs.unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 							if (err) return console.log(err);
 							console.log("file deleted successfully");
 						});
 					});
-				} */
+				}
 			} catch (error) {
 				console.log(error);
 			}
