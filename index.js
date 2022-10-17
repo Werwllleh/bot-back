@@ -71,7 +71,6 @@ const start = async () => {
 				res.status(500).send(err);
 			}
 		})
-
 		app.post("/api/upload/remove", (req, res) => {
 
 			try {
@@ -96,12 +95,11 @@ const start = async () => {
 			}
 
 		})
-
 		try {
 			if (text === '/start') {
 				return bot.sendMessage(
 					chatId,
-					'Добро пожаловать, пожалуйста пройди регистрацию',
+					`Добро пожаловать, пожалуйста пройди регистрацию`,
 					reg
 				)
 			}
@@ -155,7 +153,17 @@ const start = async () => {
 			return bot.sendMessage(chatId, 'Произошла какая то ошибка!', menu)
 		}
 
+		if (msg?.web_app_data?.data) {
+			try {
+				const data = JSON.parse(msg?.web_app_data?.data)
+				console.log(data)
+
+			} catch (e) {
+				console.log(e);
+			}
+		}
 	})
+
 
 }
 
