@@ -79,8 +79,8 @@ const start = async () => {
 		app.post("/api/upload/remove", (req, res) => {
 
 			try {
-				let { file } = req.body;
-				console.log(req);
+				let { response } = req.body;
+				console.log(response);
 
 				/* if (file !== " ") {
 					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", file), (err, stats) => {
