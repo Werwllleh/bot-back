@@ -80,7 +80,7 @@ const start = async () => {
 				let { response } = req.body;
 
 				if (response !== " ") {
-					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
+					fs.access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 						console.log(err); //here we got all information of file in stats variable
 
 						if (err) {
