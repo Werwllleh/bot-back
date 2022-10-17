@@ -80,8 +80,8 @@ const start = async () => {
 				let { response } = req.body;
 
 				if (response !== " ") {
-					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err, stats) => {
-						console.log(stats); //here we got all information of file in stats variable
+					fs.stat(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
+						console.log(err); //here we got all information of file in stats variable
 
 						if (err) {
 							return res.json("err");
