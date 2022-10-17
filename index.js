@@ -95,6 +95,7 @@ const start = async () => {
 			}
 
 		})
+
 		try {
 			if (text === '/start') {
 				return bot.sendMessage(
