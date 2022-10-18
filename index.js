@@ -50,8 +50,6 @@ const start = async () => {
 		const text = msg.text;
 		const chatId = msg.chat.id;
 
-		const fileName = '';
-
 		app.post('/api/upload', async (req, res) => {
 
 			try {
@@ -160,7 +158,7 @@ const start = async () => {
 			try {
 				const data = JSON.parse(msg?.web_app_data?.data)
 				console.log(data)
-				console.log(fileName);
+				console.log(response);
 
 				await Users.create({
 					chatId: chatId,
