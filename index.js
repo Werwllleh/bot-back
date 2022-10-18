@@ -170,6 +170,19 @@ const start = async () => {
 					)
 				)
 			}
+			if (text === "Посмотреть мой профиль") {
+				try {
+					let profile = await Users.findOne({ where: { chatId: chatId } });
+					if (profile.carImage) {
+						await bot.sendPhoto(chatId, path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage))
+					}
+					return (
+						bot.sendMessage(chatId, `Вы: ${profile.userName}\nВаше авто: ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\nПримечание: ${profile.carNote}`)
+					)
+				} catch (error) {
+					console.log(error);
+				}
+			}
 			if (text === "Меню") {
 				return (
 					bot.sendMessage(
