@@ -170,6 +170,15 @@ const start = async () => {
 					)
 				)
 			}
+			if (text === "Меню") {
+				return (
+					bot.sendMessage(
+						chatId,
+						`Что тебя интересует?`,
+						menu
+					)
+				)
+			}
 		} catch (error) {
 			return bot.sendMessage(chatId, 'Произошла какая то ошибка!', menu)
 		}
