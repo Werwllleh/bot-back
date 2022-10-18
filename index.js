@@ -86,7 +86,7 @@ const start = async () => {
 
 						unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 							if (err) return console.log(err);
-							console.log("file deleted successfully");
+							// console.log("file deleted successfully");
 						});
 					});
 				}
