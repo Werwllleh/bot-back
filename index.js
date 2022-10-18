@@ -169,6 +169,20 @@ const start = async () => {
 					carImage: data.carImage
 				})
 
+				await bot.sendMessage(
+					chatId,
+					`Спасибо за регистрацию!`,
+					menu
+				)
+
+				return (
+					bot.sendMessage(
+						msg.chat.id,
+						`Добро пожаловать ${data.name.trimEnd()}!\nЧто тебя интересует?`,
+						menu
+					)
+				)
+
 			} catch (e) {
 				console.log(e);
 			}
