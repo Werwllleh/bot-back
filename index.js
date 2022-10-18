@@ -171,8 +171,7 @@ const start = async () => {
 
 				await bot.sendMessage(
 					chatId,
-					`Спасибо за регистрацию!`,
-					menu
+					`Спасибо за регистрацию!`
 				)
 
 				return (
