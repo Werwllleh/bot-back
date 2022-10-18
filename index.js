@@ -157,7 +157,6 @@ const start = async () => {
 		if (msg?.web_app_data?.data) {
 			try {
 				const data = JSON.parse(msg?.web_app_data?.data)
-				console.log(data)
 
 				await Users.create({
 					chatId: chatId,
