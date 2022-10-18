@@ -98,11 +98,22 @@ const start = async () => {
 
 		try {
 			if (text === '/start') {
-				return bot.sendMessage(
-					chatId,
-					`Добро пожаловать, пожалуйста пройди регистрацию`,
-					reg
-				)
+				let userChatId = await Users.findOne({ where: { chatId: chatId } });
+				if (userChatId) {
+					return (
+						bot.sendMessage(
+							chatId,
+							`Привет, что тебя интересует? `,
+							menu
+						)
+					)
+				} else {
+					return bot.sendMessage(
+						chatId,
+						`Добро пожаловать в телеграм бота VAG клуба Чебоксар!\nПожалуйста пройди регистрацию`,
+						reg
+					)
+				}
 			}
 			if (text === "/info") {
 				return (
@@ -168,14 +179,9 @@ const start = async () => {
 					carImage: data.carImage
 				})
 
-				await bot.sendMessage(
-					chatId,
-					`Спасибо за регистрацию!`
-				)
-
 				return (
 					bot.sendMessage(
-						msg.chat.id,
+						chatId,
 						`Добро пожаловать ${data.name.trimEnd()}!\nЧто тебя интересует?`,
 						menu
 					)
