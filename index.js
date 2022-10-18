@@ -158,7 +158,6 @@ const start = async () => {
 			try {
 				const data = JSON.parse(msg?.web_app_data?.data)
 				console.log(data)
-				console.log(response);
 
 				await Users.create({
 					chatId: chatId,
@@ -166,7 +165,8 @@ const start = async () => {
 					carModel: data.car.toLowerCase().trimEnd(),
 					carYear: data.carYear.trimEnd(),
 					carGRZ: data.carNum.trimEnd(),
-					carNote: data.carNote.toLowerCase().trimEnd()
+					carNote: data.carNote.toLowerCase().trimEnd(),
+					carImage: data.carImage
 				})
 
 			} catch (e) {
