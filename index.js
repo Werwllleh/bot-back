@@ -161,6 +161,15 @@ const start = async () => {
 					)
 				)
 			}
+			if (text === "Профиль") {
+				return (
+					bot.sendMessage(
+						chatId,
+						`Что хочешь сделать с профилем?`,
+						profile
+					)
+				)
+			}
 		} catch (error) {
 			return bot.sendMessage(chatId, 'Произошла какая то ошибка!', menu)
 		}
