@@ -50,6 +50,8 @@ const start = async () => {
 		const text = msg.text;
 		const chatId = msg.chat.id;
 
+		const fileName = '';
+
 		app.post('/api/upload', async (req, res) => {
 
 			try {
@@ -58,7 +60,7 @@ const start = async () => {
 
 				const type = avatar.name.split('.').pop();
 
-				let fileName = chatId + "." + type;
+				fileName = chatId + "." + type;
 
 				try {
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
@@ -158,6 +160,16 @@ const start = async () => {
 			try {
 				const data = JSON.parse(msg?.web_app_data?.data)
 				console.log(data)
+				console.log(fileName);
+
+				await Users.create({
+					chatId: chatId,
+					userName: data.name.trimEnd(),
+					carModel: data.car.toLowerCase().trimEnd(),
+					carYear: data.carYear.trimEnd(),
+					carGRZ: data.carNum.trimEnd(),
+					carNote: data.carNote.toLowerCase().trimEnd()
+				})
 
 			} catch (e) {
 				console.log(e);
