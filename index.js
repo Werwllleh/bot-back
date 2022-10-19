@@ -177,7 +177,11 @@ const start = async () => {
 						await bot.sendPhoto(chatId, path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage))
 					}
 					return (
-						bot.sendMessage(chatId, `Вы: ${profile.userName}\nВаше авто: ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\nПримечание: ${profile.carNote}`)
+						bot.sendMessage(
+							chatId,
+							`Вы: ${profile.userName}\nВаше авто: ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\nПримечание: ${profile.carNote}`,
+							menu
+						)
 					)
 				} catch (error) {
 					console.log(error);
