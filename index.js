@@ -51,39 +51,29 @@ const start = async () => {
 		const chatId = msg.chat.id;
 
 		app.post('/api/upload', async (req, res) => {
-
 			try {
-
 				const { avatar } = req.files;
-
 				const type = avatar.name.split('.').pop();
-
 				fileName = chatId + "." + type;
-
 				try {
 					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 				} catch (error) {
 					console.log(error);
 				}
-
 				return res.json(fileName);
 			} catch (err) {
 				res.status(500).send(err);
 			}
 		})
-		app.post("/api/upload/remove", (req, res) => {
 
+		app.post("/api/upload/remove", async (req, res) => {
 			try {
 				let { response } = req.body;
-
 				if (response !== " ") {
 					access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
-						//console.log(err); //here we got all information of file in stats variable
-
 						if (err) {
 							return res.json("err");
 						}
-
 						unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 							if (err) return console.log(err);
 							// console.log("file deleted successfully");
@@ -93,7 +83,18 @@ const start = async () => {
 			} catch (error) {
 				console.log(error);
 			}
+		})
 
+		app.get('/searchcar', async (req, res) => {
+			try {
+				const searchName = req.query.search;
+				let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
+				if (searchCarNum.carGRZ) {
+					return res.json(searchCarNum.carImage);
+				}
+			} catch (e) {
+				res.status(500).send(e);
+			}
 		})
 
 		try {
