@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/etc
 /.pnp
 /img
 .pnp.js

@@ -38,8 +38,9 @@ app.get('/api/carnum', async (req, res) => {
 		console.log(searchName);
 		let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 		if (searchCarNum.carGRZ) {
-			console.log(res.json(searchCarNum.carImage));
 			return res.json(searchCarNum.carImage);
+		} else {
+			return res.json('No car');
 		}
 	} catch (e) {
 		res.status(500).send(e);
