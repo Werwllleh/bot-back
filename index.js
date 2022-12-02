@@ -35,6 +35,7 @@ app.get('/api', async (req, res) => {
 app.get('/api/carnum', async (req, res) => {
 	try {
 		const searchName = req.body.search;
+		console.log(searchName);
 		let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 		if (searchCarNum.carGRZ) {
 			console.log(res.json(searchCarNum.carImage));
