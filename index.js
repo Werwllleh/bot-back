@@ -86,7 +86,8 @@ const start = async () => {
 		})
 
 		app.get('/api/searchcar', async (req, res) => {
-			try {
+			return res.json('work');
+			/* try {
 				const searchName = req.query.search;
 				let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 				if (searchCarNum.carGRZ) {
@@ -95,7 +96,7 @@ const start = async () => {
 				}
 			} catch (e) {
 				res.status(500).send(e);
-			}
+			} */
 		})
 
 		try {
