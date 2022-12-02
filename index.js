@@ -32,6 +32,20 @@ app.get('/api', async (req, res) => {
 	return res.json('work');
 })
 
+app.post('/api/carnum', async (req, res) => {
+	return res.json('work');
+	/* try {
+		const searchName = req.query.search;
+		let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
+		if (searchCarNum.carGRZ) {
+			console.log(res.json(searchCarNum.carImage));
+			return res.json(searchCarNum.carImage);
+		}
+	} catch (e) {
+		res.status(500).send(e);
+	} */
+})
+
 const start = async () => {
 
 	try {
@@ -83,20 +97,6 @@ const start = async () => {
 			} catch (error) {
 				console.log(error);
 			}
-		})
-
-		app.post('/api/carnum', async (req, res) => {
-			return res.json('work');
-			/* try {
-				const searchName = req.query.search;
-				let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
-				if (searchCarNum.carGRZ) {
-					console.log(res.json(searchCarNum.carImage));
-					return res.json(searchCarNum.carImage);
-				}
-			} catch (e) {
-				res.status(500).send(e);
-			} */
 		})
 
 		try {
