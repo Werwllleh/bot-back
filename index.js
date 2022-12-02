@@ -90,6 +90,7 @@ const start = async () => {
 				const searchName = req.query.search;
 				let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 				if (searchCarNum.carGRZ) {
+					console.log(res.json(searchCarNum.carImage));
 					return res.json(searchCarNum.carImage);
 				}
 			} catch (e) {
