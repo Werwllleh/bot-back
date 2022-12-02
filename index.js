@@ -85,7 +85,7 @@ const start = async () => {
 			}
 		})
 
-		app.get('/searchcar', async (req, res) => {
+		app.get('/api/searchcar', async (req, res) => {
 			try {
 				const searchName = req.query.search;
 				let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
