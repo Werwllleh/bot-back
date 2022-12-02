@@ -85,7 +85,7 @@ const start = async () => {
 			}
 		})
 
-		app.get('/api/searchcar', async (req, res) => {
+		app.post('/api/searchcar', async (req, res) => {
 			return res.json('work');
 			/* try {
 				const searchName = req.query.search;
