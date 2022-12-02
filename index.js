@@ -32,7 +32,7 @@ app.get('/api', async (req, res) => {
 	return res.json('work');
 })
 
-app.post('/api/carnum', async (req, res) => {
+app.get('/api/carnum', async (req, res) => {
 	return res.json('work');
 	/* try {
 		const searchName = req.query.search;
