@@ -33,8 +33,7 @@ app.get('/api', async (req, res) => {
 })
 
 app.get('/api/carnum', async (req, res) => {
-	return res.json('work');
-	/* try {
+	try {
 		const searchName = req.query.search;
 		let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 		if (searchCarNum.carGRZ) {
@@ -43,7 +42,7 @@ app.get('/api/carnum', async (req, res) => {
 		}
 	} catch (e) {
 		res.status(500).send(e);
-	} */
+	}
 })
 
 const start = async () => {
