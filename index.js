@@ -32,15 +32,12 @@ app.get('/api', async (req, res) => {
 	return res.json('work');
 })
 
-app.get('/api/carnum', async (req, res) => {
+app.post('/api/searchcar', async (req, res) => {
 	try {
-		const searchName = req.body.search;
-		console.log(searchName);
-		let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
-		if (searchCarNum.carGRZ) {
-			return res.json(searchCarNum.carImage);
-		} else {
-			return res.json('No car');
+		const carNumber = req.body.searcheble;
+		if (carNumber) {
+			let searchCar = await Users.findOne({ where: { carGRZ: carNumber } })
+			return res.json(searchCar);
 		}
 	} catch (e) {
 		res.status(500).send(e);
