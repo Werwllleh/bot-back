@@ -11,12 +11,15 @@ const cors = require('cors');
 const { access, unlink } = require('fs');
 const uuid = require('uuid');
 const path = require("path");
+const { json } = require('body-parser');
 
 
 const app = express();
 
 app.use(express.json());
 app.use("/api/image", express.static("img/users_cars"));
+app.use("/api/icons", express.static("img/icons"));
+
 
 app.use(cors());
 
@@ -34,10 +37,12 @@ app.get('/api', async (req, res) => {
 
 app.post('/api/searchcar', async (req, res) => {
 	try {
-		const carNumber = req.body.searcheble;
-		if (carNumber) {
-			let searchCar = await Users.findOne({ where: { carGRZ: carNumber } })
-			return res.json(searchCar);
+		const searchName = req.body.searcheble;
+		if (searchName != '') {
+			let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
+			return res.json(searchCarNum);
+		} else {
+			return res.json('Не найдено');
 		}
 	} catch (e) {
 		res.status(500).send(e);
