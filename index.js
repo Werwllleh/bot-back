@@ -8,7 +8,7 @@ const Users = require("./models");
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-const { access, unlink } = require('fs');
+const { access, unlink, readdir } = require('fs');
 const uuid = require('uuid');
 const path = require("path");
 const { json } = require('body-parser');
@@ -25,7 +25,7 @@ app.use(cors());
 
 app.use(fileUpload({}));
 
-const port = process.env.PORT || 5000; 
+const port = process.env.PORT || 5000;
 
 app.listen(port, () =>
 	console.log(`App is listening on port ${port}.`)
@@ -48,6 +48,26 @@ app.post('/api/searchcar', async (req, res) => {
 		res.status(500).send(e);
 	}
 })
+
+
+
+app.get('/api/ourcars', async (req, res) => {
+	let arrPhotos = [];
+	readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
+		try {
+			files.forEach(fileName => {
+				arrPhotos.push(fileName);
+			});
+			return res.json(arrPhotos);
+		} catch (err) {
+			console.log(err);
+		}
+	});
+	console.log(arrPhotos);
+})
+
+
+
 
 const start = async () => {
 
