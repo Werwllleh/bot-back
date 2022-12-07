@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const token = '5632609691:AAHJ6CvPeasSSrUHoGZePHEeLudoZv3sIR4';
 const bot = new TelegramBot(token, { polling: true });
-const { menu, reg, partners, ourcars, searchcar, profile, editprofile } = require('./keyboards');
+const { menu, reg, partners, ourcars, searchcar, profile } = require('./keyboards');
 const sequelize = require('./db');
 const Users = require("./models");
 
@@ -12,11 +12,13 @@ const { access, unlink, readdir } = require('fs');
 const uuid = require('uuid');
 const path = require("path");
 const { json } = require('body-parser');
+const e = require('express');
 
 
 const app = express();
 
 app.use(express.json());
+
 app.use("/api/image", express.static("img/users_cars"));
 app.use("/api/icons", express.static("img/icons"));
 
@@ -50,23 +52,37 @@ app.post('/api/searchcar', async (req, res) => {
 })
 
 
-
 app.get('/api/ourcars', async (req, res) => {
-	let arrPhotos = [];
-	readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
-		try {
+	try {
+		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
+			let allCarsPhotosName = [];
+
 			files.forEach(fileName => {
-				arrPhotos.push(fileName);
+				allCarsPhotosName.push(fileName);
 			});
-			return res.json(arrPhotos);
-		} catch (err) {
-			console.log(err);
-		}
-	});
-	console.log(arrPhotos);
+
+			const pageCount = Math.ceil(files.length / 12);
+			let page = parseInt(req.query.page);
+
+			if (!page) {
+				page = 1;
+			}
+
+			if (page > pageCount) {
+				page = pageCount
+			}
+
+			res.json({
+				"page": page,
+				"pageCount": pageCount,
+				"files": allCarsPhotosName.slice(page * 12 - 12, page * 12)
+			});
+
+		});
+	} catch (error) {
+		console.log(error);
+	}
 })
-
-
 
 
 const start = async () => {
