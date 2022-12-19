@@ -5,6 +5,7 @@
 /etc
 /root
 /.pnp
+/.vscode
 /img
 .pnp.js
 

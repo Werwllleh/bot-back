@@ -51,6 +51,12 @@ app.post('/api/searchcar', async (req, res) => {
 	}
 })
 
+function shuffleArray(array) {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+}
 
 app.get('/api/ourcars', async (req, res) => {
 	try {
@@ -60,6 +66,8 @@ app.get('/api/ourcars', async (req, res) => {
 			files.forEach(fileName => {
 				allCarsPhotosName.push(fileName);
 			});
+
+			shuffleArray(allCarsPhotosName);
 
 			const pageCount = Math.ceil(files.length / 12);
 			let page = parseInt(req.query.page);
