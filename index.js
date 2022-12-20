@@ -9,7 +9,6 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const { access, unlink, readdir } = require('fs');
-const uuid = require('uuid');
 const path = require("path");
 const e = require('express');
 
