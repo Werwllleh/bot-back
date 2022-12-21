@@ -9,7 +9,9 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const { access, unlink, readdir } = require('fs');
+const uuid = require('uuid');
 const path = require("path");
+const { json } = require('body-parser');
 const e = require('express');
 
 
@@ -171,13 +173,13 @@ const start = async () => {
 					)
 				)
 			}
-			if (text === "Близжайшая встреча") {
-				await bot.sendPhoto(chatId, './img/event.jpg');
+			if (text === "Встречи") {
+				await bot.sendPhoto(chatId, './img/event.jpeg');
 				await bot.sendLocation(chatId, 56.135323, 47.242850);
 				return (
 					bot.sendMessage(
 						chatId,
-						`Дата: 25/12/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
+						`Дата: 16/10/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
 						menu
 					)
 				)
