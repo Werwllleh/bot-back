@@ -1,4 +1,7 @@
-const webAppUrl = 'https://chic-lolly-1605d1.netlify.app';
+const webAppUrl = 'https://92.255.78.177';
+
+// const webAppUrl = 'https://chic-lolly-1605d1.netlify.app';
+
 
 module.exports = {
 	menu: {
