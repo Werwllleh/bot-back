@@ -8,6 +8,7 @@
 /.vscode
 /img
 /var
+/process.env
 
 .pnp.js
 
