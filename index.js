@@ -1,5 +1,9 @@
+require('dotenv').config();
+
 const TelegramBot = require('node-telegram-bot-api');
-const token = '5632609691:AAHJ6CvPeasSSrUHoGZePHEeLudoZv3sIR4';
+
+const token = process.env.TOKEN;
+
 const bot = new TelegramBot(token, { polling: true });
 const { menu, reg, partners, ourcars, searchcar, profile } = require('./keyboards');
 const sequelize = require('./db');
@@ -13,6 +17,7 @@ const uuid = require('uuid');
 const path = require("path");
 const { json } = require('body-parser');
 const e = require('express');
+
 
 
 const app = express();
@@ -33,6 +38,8 @@ app.listen(port, () =>
 	console.log(`App is listening on port ${port}.`)
 );
 
+
+
 app.get('/api', async (req, res) => {
 	return res.json('work');
 })
@@ -41,7 +48,7 @@ app.post('/api/searchcar', async (req, res) => {
 	try {
 		const searchName = req.body.searcheble;
 		if (searchName != '') {
-			let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
+			var searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 			return res.json(searchCarNum);
 		} else {
 			return res.json('Не найдено');
@@ -52,7 +59,7 @@ app.post('/api/searchcar', async (req, res) => {
 })
 
 function shuffleArray(array) {
-	for (let i = array.length - 1; i > 0; i--) {
+	for (var i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
@@ -61,7 +68,7 @@ function shuffleArray(array) {
 app.get('/api/ourcars', async (req, res) => {
 	try {
 		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
-			let allCarsPhotosName = [];
+			var allCarsPhotosName = [];
 
 			files.forEach(fileName => {
 				allCarsPhotosName.push(fileName);
@@ -70,7 +77,7 @@ app.get('/api/ourcars', async (req, res) => {
 			shuffleArray(allCarsPhotosName);
 
 			const pageCount = Math.ceil(files.length / 12);
-			let page = parseInt(req.query.page);
+			var page = parseInt(req.query.page);
 
 			if (!page) {
 				page = 1;
@@ -116,11 +123,7 @@ const start = async () => {
 				const { avatar } = req.files;
 				const type = avatar.name.split('.').pop();
 				fileName = chatId + "." + type;
-				try {
-					avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
-				} catch (error) {
-					console.log(error);
-				}
+				await avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 				return res.json(fileName);
 			} catch (err) {
 				res.status(500).send(err);
@@ -129,7 +132,7 @@ const start = async () => {
 
 		app.post("/api/upload/remove", async (req, res) => {
 			try {
-				let { response } = req.body;
+				var { response } = req.body;
 				if (response !== " ") {
 					access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 						if (err) {
@@ -137,7 +140,7 @@ const start = async () => {
 						}
 						unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
 							if (err) return console.log(err);
-							// console.log("file deleted successfully");
+							// console.log("file devared successfully");
 						});
 					});
 				}
@@ -148,7 +151,7 @@ const start = async () => {
 
 		try {
 			if (text === '/start') {
-				let userChatId = await Users.findOne({ where: { chatId: chatId } });
+				var userChatId = await Users.findOne({ where: { chatId: chatId } });
 				if (userChatId) {
 					return (
 						bot.sendMessage(
@@ -173,13 +176,13 @@ const start = async () => {
 					)
 				)
 			}
-			if (text === "Встречи") {
-				await bot.sendPhoto(chatId, './img/event.jpeg');
+			if (text === "Близжайшая встреча") {
+				await bot.sendPhoto(chatId, './img/event.jpg');
 				await bot.sendLocation(chatId, 56.135323, 47.242850);
 				return (
 					bot.sendMessage(
 						chatId,
-						`Дата: 16/10/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
+						`Дата: 25/12/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
 						menu
 					)
 				)
@@ -222,7 +225,7 @@ const start = async () => {
 			}
 			if (text === "Посмотреть мой профиль") {
 				try {
-					let profile = await Users.findOne({ where: { chatId: chatId } });
+					var profile = await Users.findOne({ where: { chatId: chatId } });
 					if (profile.carImage) {
 						await bot.sendPhoto(chatId, path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage))
 					}
@@ -252,7 +255,7 @@ const start = async () => {
 
 		if (msg?.web_app_data?.data) {
 			try {
-				const data = JSON.parse(msg?.web_app_data?.data)
+				const data = await JSON.parse(msg?.web_app_data?.data)
 				console.log(data.carImage);
 
 				await Users.create({
@@ -272,7 +275,6 @@ const start = async () => {
 						menu
 					)
 				)
-
 			} catch (e) {
 				console.log(e);
 			}
