@@ -3,6 +3,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 
 const token = process.env.TOKEN;
+process.env["NTBA_FIX_350"] = 1;
 
 const bot = new TelegramBot(token, { polling: true });
 const { menu, reg, partners, ourcars, searchcar, profile } = require('./keyboards');
@@ -13,7 +14,8 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const { access, unlink, readdir } = require('fs');
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
+const mv = require('mv');
 const path = require("path");
 const { json } = require('body-parser');
 const e = require('express');
@@ -32,12 +34,11 @@ app.use(cors());
 
 app.use(fileUpload({}));
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 app.listen(port, () =>
 	console.log(`App is listening on port ${port}.`)
 );
-
 
 
 app.get('/api', async (req, res) => {
@@ -48,7 +49,7 @@ app.post('/api/searchcar', async (req, res) => {
 	try {
 		const searchName = req.body.searcheble;
 		if (searchName != '') {
-			var searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
+			let searchCarNum = await Users.findOne({ where: { carGRZ: searchName } });
 			return res.json(searchCarNum);
 		} else {
 			return res.json('Не найдено');
@@ -59,7 +60,7 @@ app.post('/api/searchcar', async (req, res) => {
 })
 
 function shuffleArray(array) {
-	for (var i = array.length - 1; i > 0; i--) {
+	for (let i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
@@ -68,7 +69,7 @@ function shuffleArray(array) {
 app.get('/api/ourcars', async (req, res) => {
 	try {
 		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
-			var allCarsPhotosName = [];
+			let allCarsPhotosName = [];
 
 			files.forEach(fileName => {
 				allCarsPhotosName.push(fileName);
@@ -77,7 +78,7 @@ app.get('/api/ourcars', async (req, res) => {
 			shuffleArray(allCarsPhotosName);
 
 			const pageCount = Math.ceil(files.length / 12);
-			var page = parseInt(req.query.page);
+			let page = parseInt(req.query.page);
 
 			if (!page) {
 				page = 1;
@@ -94,6 +95,41 @@ app.get('/api/ourcars', async (req, res) => {
 			});
 
 		});
+	} catch (error) {
+		console.log(error);
+	}
+})
+
+app.post('/api/upload', async (req, res) => {
+	try {
+		if (req.files.avatar) {
+			let { name } = req.files.avatar;
+			let type = name.split('.').pop();
+			let fileName = uuidv4(name) + '.' + type;
+			console.log(fileName);
+			await mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+			return res.json(fileName);
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(500).send(err);
+	}
+})
+
+app.post("/api/upload/remove", async (req, res) => {
+	try {
+		let { response } = req.body;
+		if (response !== " ") {
+			access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
+				if (err) {
+					return res.json("err");
+				}
+				unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
+					if (err) return console.log(err);
+					// console.log("file deleted successfully");
+				});
+			});
+		}
 	} catch (error) {
 		console.log(error);
 	}
@@ -118,40 +154,9 @@ const start = async () => {
 		const text = msg.text;
 		const chatId = msg.chat.id;
 
-		app.post('/api/upload', async (req, res) => {
-			try {
-				const { avatar } = req.files;
-				const type = avatar.name.split('.').pop();
-				fileName = chatId + "." + type;
-				await avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
-				return res.json(fileName);
-			} catch (err) {
-				res.status(500).send(err);
-			}
-		})
-
-		app.post("/api/upload/remove", async (req, res) => {
-			try {
-				var { response } = req.body;
-				if (response !== " ") {
-					access(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
-						if (err) {
-							return res.json("err");
-						}
-						unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", response), (err) => {
-							if (err) return console.log(err);
-							// console.log("file devared successfully");
-						});
-					});
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		})
-
 		try {
 			if (text === '/start') {
-				var userChatId = await Users.findOne({ where: { chatId: chatId } });
+				let userChatId = await Users.findOne({ where: { chatId: chatId } });
 				if (userChatId) {
 					return (
 						bot.sendMessage(
@@ -225,7 +230,7 @@ const start = async () => {
 			}
 			if (text === "Посмотреть мой профиль") {
 				try {
-					var profile = await Users.findOne({ where: { chatId: chatId } });
+					let profile = await Users.findOne({ where: { chatId: chatId } });
 					if (profile.carImage) {
 						await bot.sendPhoto(chatId, path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage))
 					}
