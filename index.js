@@ -6,7 +6,7 @@ const token = process.env.TOKEN;
 process.env["NTBA_FIX_350"] = 1;
 
 const bot = new TelegramBot(token, { polling: true });
-const { menu, reg, partners, ourcars, searchcar, profile } = require('./keyboards');
+const { menu, reg, partners, ourcars, searchcar, profile, changeProfile } = require('./keyboards');
 const sequelize = require('./db');
 const Users = require("./models");
 
@@ -20,7 +20,7 @@ const path = require("path");
 const { json } = require('body-parser');
 const e = require('express');
 
-
+let curChatId;
 
 const app = express();
 
@@ -103,15 +103,13 @@ app.get('/api/ourcars', async (req, res) => {
 app.post('/api/upload', async (req, res) => {
 	try {
 		if (req.files.avatar) {
-			let { name } = req.files.avatar;
-			let type = name.split('.').pop();
-			let fileName = uuidv4(name) + '.' + type;
-			console.log(fileName);
-			await mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+			let { avatar } = req.files;
+			let type = avatar.name.split('.').pop();
+			let fileName = uuidv4(avatar.name) + '.' + type;
+			await avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
 			return res.json(fileName);
 		}
 	} catch (err) {
-		console.log(err);
 		res.status(500).send(err);
 	}
 })
@@ -134,6 +132,43 @@ app.post("/api/upload/remove", async (req, res) => {
 		console.log(error);
 	}
 })
+
+function updateProfile(chatId, curImage) {
+	let curChatId = chatId;
+
+	app.post('/api/change', async (req, res) => {
+		try {
+
+			let changedData = req.body.changedData;
+
+			await Users.update(
+				{
+					carModel: changedData.car.toLowerCase().trimEnd(),
+					carYear: changedData.carYear.trimEnd(),
+					carGRZ: changedData.carNum.trimEnd(),
+					carNote: changedData.carNote.toLowerCase().trimEnd(),
+					carImage: changedData.carImage,
+				},
+				{
+					where: { chatId: curChatId },
+				}
+			);
+
+			if (curImage) {
+				unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", curImage), (err) => {
+					if (err) throw err;
+					console.log('file was deleted');
+				});
+			}
+
+		} catch (err) {
+			console.log(err);
+		}
+	})
+}
+
+
+
 
 
 const start = async () => {
@@ -237,13 +272,27 @@ const start = async () => {
 					return (
 						bot.sendMessage(
 							chatId,
-							`Вы: ${profile.userName}\nВаше авто: ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\nПримечание: ${profile.carNote}`,
-							menu
+							`Вы: ${profile.userName}\nВаше авто: ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\n${profile.carNote ? 'Примечание: ' + profile.carNote : ''}`,
+							profile
 						)
 					)
 				} catch (error) {
 					console.log(error);
 				}
+			}
+			if (text === "Отредактировать профиль") {
+				let profile = await Users.findOne({ where: { chatId: chatId } });
+				let curImage = profile.carImage
+
+				updateProfile(chatId, curImage);
+
+				return (
+					bot.sendMessage(
+						chatId,
+						'Перейди, если хочешь изменить данные своего профиля  👇',
+						changeProfile
+					)
+				)
 			}
 			if (text === "Меню") {
 				return (
@@ -261,7 +310,6 @@ const start = async () => {
 		if (msg?.web_app_data?.data) {
 			try {
 				const data = await JSON.parse(msg?.web_app_data?.data)
-				console.log(data.carImage);
 
 				await Users.create({
 					chatId: chatId,

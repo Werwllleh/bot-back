@@ -59,6 +59,15 @@ module.exports = {
 			],
 		}
 	},
+	changeProfile: {
+		reply_markup: {
+			inline_keyboard: [
+				[{
+					text: 'Страница изменения данных', web_app: { url: webAppUrl + '/form/change' }
+				}],
+			],
+		}
+	},
 	editprofile: {
 		reply_markup: {
 			keyboard: [
