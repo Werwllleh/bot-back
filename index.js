@@ -20,8 +20,6 @@ const path = require("path");
 const { json } = require('body-parser');
 const e = require('express');
 
-let curChatId;
-
 const app = express();
 
 app.use(express.json());
@@ -75,9 +73,9 @@ app.get('/api/ourcars', async (req, res) => {
 				allCarsPhotosName.push(fileName);
 			});
 
-			shuffleArray(allCarsPhotosName);
+			//shuffleArray(allCarsPhotosName);
 
-			const pageCount = Math.ceil(files.length / 12);
+			const pageCount = Math.ceil(files.length / 22);
 			let page = parseInt(req.query.page);
 
 			if (!page) {
@@ -91,7 +89,7 @@ app.get('/api/ourcars', async (req, res) => {
 			res.json({
 				"page": page,
 				"pageCount": pageCount,
-				"files": allCarsPhotosName.slice(page * 12 - 12, page * 12)
+				"files": allCarsPhotosName.slice(page * 22 - 22, page * 22)
 			});
 
 		});
@@ -154,21 +152,23 @@ function updateProfile(chatId, curImage) {
 				}
 			);
 
-			if (curImage) {
-				unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", curImage), (err) => {
-					if (err) throw err;
-					console.log('file was deleted');
-				});
-			}
+			curChatId = '';
 
+			try {
+				if (curImage) {
+					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", curImage), (err) => {
+						if (err) throw err;
+						console.log('file was deleted');
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		} catch (err) {
 			console.log(err);
 		}
 	})
 }
-
-
-
 
 
 const start = async () => {
@@ -207,27 +207,31 @@ const start = async () => {
 						reg
 					)
 				}
-			}
-			if (text === "/info") {
+			} else if (text === "/info") {
 				return (
 					bot.sendMessage(
 						chatId,
 						`Привет привееет!\nНа связи VW/SK CLUB 21 - крупнейшее автосообщество ваговодов Чувашии☝🏻\n\nМы - одна большая семья, которая держится друг за друга, делится своими радостями и неудачами, а все остальные переживают это, помогают в решении вопроса и поддерживают!\nВсе любят покрасоваться своими ласточками и мы не исключение💥\nВвиду этого у нас стабильно проходят автовстречи, где собирается вся наша дружная семья и обсуждает все события в большом кругу.\nА затем флаги в руки и в конвой.\nМы проезжаем по центральным улицам Чебоксар, чтобы показать нашу активность и дружность.\nНе забудем сказать и про партнеров, которых у нас немало. И этот список постоянно пополняется. От доставки еды до ремонта турбины - огромное количество сфер готовы предоставить клубную скидку для таких умничек и молодцов😂😂\n\nУ тебя нет ВАГа, но ты настоящий фанат немецкого автопрома? Не переживай и приходи на встречу🥰 Мы любим и уважаем каждого участника.\nДумаем, что стало немного понятнее.\nПоэтому чего ждать - добро пожаловать к нам в клуб!!!🎉🎊🎉🎊🎉`
 					)
 				)
-			}
-			if (text === "Близжайшая встреча") {
-				await bot.sendPhoto(chatId, './img/event.jpg');
-				await bot.sendLocation(chatId, 56.135323, 47.242850);
+			} else if (text === "Ближайшая встреча") {
 				return (
 					bot.sendMessage(
 						chatId,
-						`Дата: 25/12/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
+						`До встречи в Новом Году!)`,
 						menu
 					)
 				)
-			}
-			if (text === "Партнеры") {
+				// await bot.sendPhoto(chatId, './img/event.jpg');
+				// await bot.sendLocation(chatId, 56.135323, 47.242850);
+				// return (
+				// 	bot.sendMessage(
+				// 		chatId,
+				// 		`Дата: 25/12/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
+				// 		menu
+				// 	)
+				// )
+			} else if (text === "Партнеры") {
 				return (
 					bot.sendMessage(
 						chatId,
@@ -235,8 +239,7 @@ const start = async () => {
 						partners
 					)
 				)
-			}
-			if (text === "Наши авто") {
+			} else if (text === "Наши авто") {
 				return (
 					bot.sendMessage(
 						chatId,
@@ -244,8 +247,7 @@ const start = async () => {
 						ourcars
 					)
 				)
-			}
-			if (text === "Поиск авто") {
+			} else if (text === "Поиск авто") {
 				return (
 					bot.sendMessage(
 						chatId,
@@ -253,8 +255,7 @@ const start = async () => {
 						searchcar
 					)
 				)
-			}
-			if (text === "Профиль") {
+			} else if (text === "Профиль") {
 				return (
 					bot.sendMessage(
 						chatId,
@@ -262,8 +263,7 @@ const start = async () => {
 						profile
 					)
 				)
-			}
-			if (text === "Посмотреть мой профиль") {
+			} else if (text === "Посмотреть мой профиль") {
 				try {
 					let profile = await Users.findOne({ where: { chatId: chatId } });
 					if (profile.carImage) {
@@ -279,28 +279,36 @@ const start = async () => {
 				} catch (error) {
 					console.log(error);
 				}
-			}
-			if (text === "Отредактировать профиль") {
-				let profile = await Users.findOne({ where: { chatId: chatId } });
-				let curImage = profile.carImage
+			} else if (text === "Отредактировать профиль") {
 
-				updateProfile(chatId, curImage);
-
-				return (
-					bot.sendMessage(
-						chatId,
-						'Перейди, если хочешь изменить данные своего профиля  👇',
-						changeProfile
-					)
+				return bot.sendMessage(
+					chatId,
+					'Раздел в разработке:)'
 				)
-			}
-			if (text === "Меню") {
+				// let profile = await Users.findOne({ where: { chatId: chatId } });
+				// let curImage = profile.carImage
+
+				// updateProfile(chatId, curImage);
+
+				// return (
+				// 	bot.sendMessage(
+				// 		chatId,
+				// 		'Перейди, если хочешь изменить данные своего профиля  👇',
+				// 		changeProfile
+				// 	)
+				// )
+			} else if (text === "Меню") {
 				return (
 					bot.sendMessage(
 						chatId,
 						`Что тебя интересует?`,
 						menu
 					)
+				)
+			} else if (text === "Поддержать клуб") {
+				return bot.sendMessage(
+					chatId,
+					'Раздел в разработке:)'
 				)
 			}
 		} catch (error) {
