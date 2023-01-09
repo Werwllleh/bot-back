@@ -1,7 +1,8 @@
-const webAppUrl = 'https://92.255.78.177';
+require('dotenv').config();
+
+const webAppUrl = process.env.URL;
 
 // const webAppUrl = 'https://chic-lolly-1605d1.netlify.app';
-
 
 module.exports = {
 	// menu: {

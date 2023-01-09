@@ -19,6 +19,7 @@ const mv = require('mv');
 const path = require("path");
 const { json } = require('body-parser');
 const e = require('express');
+const { QueryTypes } = require('sequelize');
 
 const app = express();
 
@@ -64,6 +65,42 @@ function shuffleArray(array) {
 	}
 }
 
+function deleteDoubleImg() {
+
+	let photosQuery = Users.findAll({
+		attributes: ['carImage'],
+		raw: true
+	}).then(function (results) {
+		let photosInDB = results.map((i) => i.carImage)
+
+		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
+
+			let photosInDIR = [];
+
+			files.forEach(photoName => {
+				photosInDIR.push(photoName);
+			});
+
+			console.log(photosInDIR.length);
+			console.log(photosInDB.length);
+
+			if (photosInDB.length != photosInDIR.length) {
+				let diffPhotos = photosInDIR.filter(i => !photosInDB.includes(i));
+
+				diffPhotos.forEach((dPhoto) => {
+					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", dPhoto), (err) => {
+						if (err) throw err;
+						console.log('dPhoto was deleted');
+					});
+				})
+
+				console.log(diffPhotos.length);
+
+			}
+		})
+	});
+}
+
 app.get('/api/ourcars', async (req, res) => {
 	try {
 		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
@@ -75,7 +112,7 @@ app.get('/api/ourcars', async (req, res) => {
 
 			//shuffleArray(allCarsPhotosName);
 
-			const pageCount = Math.ceil(files.length / 22);
+			const pageCount = Math.ceil(files.length / 12);
 			let page = parseInt(req.query.page);
 
 			if (!page) {
@@ -89,7 +126,7 @@ app.get('/api/ourcars', async (req, res) => {
 			res.json({
 				"page": page,
 				"pageCount": pageCount,
-				"files": allCarsPhotosName.slice(page * 22 - 22, page * 22)
+				"files": allCarsPhotosName.slice(page * 12 - 12, page * 12)
 			});
 
 		});
@@ -306,9 +343,11 @@ const start = async () => {
 					)
 				)
 			} else if (text === "Поддержать клуб") {
+				await bot.sendMessage(chatId, 'Реквизиты карты для перевода:');
+				await bot.sendMessage(chatId, '2202 2001 3923 4809');
 				return bot.sendMessage(
 					chatId,
-					'Раздел в разработке:)'
+					'Заранее спасибо:)'
 				)
 			}
 		} catch (error) {
