@@ -17,9 +17,9 @@ const { access, unlink, readdir } = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const mv = require('mv');
 const path = require("path");
+const sharp = require("sharp");
 const { json } = require('body-parser');
 const e = require('express');
-const { QueryTypes } = require('sequelize');
 
 const app = express();
 
@@ -27,7 +27,6 @@ app.use(express.json());
 
 app.use("/api/image", express.static("img/users_cars"));
 app.use("/api/icons", express.static("img/icons"));
-
 
 app.use(cors());
 
@@ -38,7 +37,6 @@ const port = process.env.PORT;
 app.listen(port, () =>
 	console.log(`App is listening on port ${port}.`)
 );
-
 
 app.get('/api', async (req, res) => {
 	return res.json('work');
@@ -66,39 +64,36 @@ function shuffleArray(array) {
 }
 
 function deleteDoubleImg() {
+	try {
+		let photosQuery = Users.findAll({
+			attributes: ['carImage'],
+			raw: true
+		}).then(function (results) {
+			let photosInDB = results.map((i) => i.carImage)
 
-	let photosQuery = Users.findAll({
-		attributes: ['carImage'],
-		raw: true
-	}).then(function (results) {
-		let photosInDB = results.map((i) => i.carImage)
+			readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
 
-		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
+				let photosInDIR = [];
 
-			let photosInDIR = [];
+				files.forEach(photoName => {
+					photosInDIR.push(photoName);
+				});
 
-			files.forEach(photoName => {
-				photosInDIR.push(photoName);
-			});
+				if (photosInDB.length != photosInDIR.length) {
+					let diffPhotos = photosInDIR.filter(i => !photosInDB.includes(i));
 
-			console.log(photosInDIR.length);
-			console.log(photosInDB.length);
-
-			if (photosInDB.length != photosInDIR.length) {
-				let diffPhotos = photosInDIR.filter(i => !photosInDB.includes(i));
-
-				diffPhotos.forEach((dPhoto) => {
-					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", dPhoto), (err) => {
-						if (err) throw err;
-						console.log('dPhoto was deleted');
-					});
-				})
-
-				console.log(diffPhotos.length);
-
-			}
-		})
-	});
+					diffPhotos.forEach((dPhoto) => {
+						unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", dPhoto), (err) => {
+							if (err) throw err;
+							console.log('dPhoto was deleted');
+						});
+					})
+				}
+			})
+		});
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 app.get('/api/ourcars', async (req, res) => {
@@ -148,6 +143,22 @@ app.post('/api/upload', async (req, res) => {
 		res.status(500).send(err);
 	}
 })
+
+async function resizeImage() {
+	try {
+		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
+			files.forEach(smallCard => {
+				sharp(smallCard)
+					.jpeg({
+						quality: 55
+					})
+					.toFile(smallCard + "_" + "small.jpeg");
+			});
+		})
+	} catch (error) {
+		console.log(error);
+	}
+}
 
 app.post("/api/upload/remove", async (req, res) => {
 	try {
@@ -245,6 +256,7 @@ const start = async () => {
 					)
 				}
 			} else if (text === "/info") {
+				// resizeImage();
 				return (
 					bot.sendMessage(
 						chatId,
