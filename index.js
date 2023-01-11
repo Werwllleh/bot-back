@@ -120,6 +120,7 @@ app.get('/api/ourcars', async (req, res) => {
 
 			res.json({
 				"page": page,
+				"countPhotos": allCarsPhotosName.length,
 				"pageCount": pageCount,
 				"files": allCarsPhotosName.slice(page * 12 - 12, page * 12)
 			});
@@ -148,10 +149,9 @@ async function resizeImage() {
 	try {
 		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
 			files.forEach(smallCard => {
-				sharp(smallCard)
-					.jpeg({
-						quality: 55
-					})
+				sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", smallCard))
+					.resize(200)
+					.toFormat("jpeg", { mozjpeg: true })
 					.toFile(smallCard + "_" + "small.jpeg");
 			});
 		})
