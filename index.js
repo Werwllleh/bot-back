@@ -26,6 +26,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/image", express.static("img/users_cars"));
+app.use("/api/image/small", express.static("img/users_small"));
+
 app.use("/api/icons", express.static("img/icons"));
 
 app.use(cors());
@@ -107,7 +109,7 @@ app.get('/api/ourcars', async (req, res) => {
 
 			//shuffleArray(allCarsPhotosName);
 
-			const pageCount = Math.ceil(files.length / 12);
+			const pageCount = Math.ceil(files.length / 20);
 			let page = parseInt(req.query.page);
 
 			if (!page) {
@@ -122,7 +124,7 @@ app.get('/api/ourcars', async (req, res) => {
 				"page": page,
 				"countPhotos": allCarsPhotosName.length,
 				"pageCount": pageCount,
-				"files": allCarsPhotosName.slice(page * 12 - 12, page * 12)
+				"files": allCarsPhotosName.slice(page * 20 - 20, page * 20)
 			});
 
 		});
@@ -138,6 +140,7 @@ app.post('/api/upload', async (req, res) => {
 			let type = avatar.name.split('.').pop();
 			let fileName = uuidv4(avatar.name) + '.' + type;
 			await avatar.mv(path.resolve(__dirname, "..", "bot-back/img/users_cars", fileName));
+
 			return res.json(fileName);
 		}
 	} catch (err) {
@@ -148,12 +151,40 @@ app.post('/api/upload', async (req, res) => {
 async function resizeImage() {
 	try {
 		readdir(path.resolve(__dirname, "..", "bot-back/img/users_cars"), (err, files) => {
+
 			files.forEach(smallCard => {
-				sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", smallCard))
-					.resize(200)
-					.toFormat("jpeg", { mozjpeg: true })
-					.toFile(smallCard + "_" + "small.jpeg");
+
+				const metadata = sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", smallCard)).metadata();
+
+				metadata.then(function (photoData) {
+
+					let orientationPhoto = photoData.orientation;
+
+					let wPhoto = Math.ceil(photoData.width - (photoData.width * 60) / 100);
+					let hPhoto = Math.ceil(photoData.height - (photoData.height * 60) / 100);
+
+					if (orientationPhoto === 6) {
+						sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", smallCard))
+							.rotate(90)
+							.resize(wPhoto, hPhoto)
+							.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+							.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", smallCard + "_" + "small.jpeg"));
+					} else if (orientationPhoto === 3) {
+						sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", smallCard))
+							.rotate(180)
+							.resize(wPhoto, hPhoto)
+							.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+							.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", smallCard + "_" + "small.jpeg"));
+					} else {
+						sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", smallCard))
+							.resize(wPhoto, hPhoto)
+							.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+							.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", smallCard + "_" + "small.jpeg"));
+					}
+
+				})
 			});
+
 		})
 	} catch (error) {
 		console.log(error);
@@ -256,7 +287,6 @@ const start = async () => {
 					)
 				}
 			} else if (text === "/info") {
-				// resizeImage();
 				return (
 					bot.sendMessage(
 						chatId,
@@ -379,6 +409,25 @@ const start = async () => {
 					carNote: data.carNote.toLowerCase().trimEnd(),
 					carImage: data.carImage
 				})
+
+				const metadata = await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage)).metadata();
+				let orientationPhoto = metadata.orientation;
+				let wPhoto = Math.ceil(metadata.width - (metadata.width * 60) / 100);
+				let hPhoto = Math.ceil(metadata.height - (metadata.height * 60) / 100);
+
+				if (orientationPhoto === 6) {
+					await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage))
+						.rotate(90)
+						.resize(wPhoto, hPhoto)
+						.toFormat("jpeg", { mozjpeg: true, quality: 75 })
+						.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", data.carImage + "_" + "small.jpeg"));
+				} else if (orientationPhoto === 1 || orientationPhoto === 3) {
+					await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage))
+						.rotate(180)
+						.resize(wPhoto, hPhoto)
+						.toFormat("jpeg", { mozjpeg: true, quality: 75 })
+						.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", data.carImage + "_" + "small.jpeg"));
+				}
 
 				return (
 					bot.sendMessage(
