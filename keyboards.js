@@ -5,17 +5,6 @@ const webAppUrl = process.env.URL;
 // const webAppUrl = 'https://chic-lolly-1605d1.netlify.app';
 
 module.exports = {
-	// menu: {
-	// 	reply_markup: {
-	// 		// Добавляем все кнопки
-	// 		keyboard: [
-	// 			[{ text: 'Ближайшая встреча' }, { text: 'Партнеры' }],
-	// 			[{ text: 'Наши авто' }, { text: 'Продажа авто' }],
-	// 			[{ text: 'Поиск авто' }, { text: 'Запросить помощь' }],
-	// 			[{ text: 'Профиль' }, { text: 'Поддержать клуб' }],
-	// 		],
-	// 	}
-	// },
 	menu: {
 		reply_markup: {
 			// Добавляем все кнопки
@@ -65,7 +54,8 @@ module.exports = {
 	profile: {
 		reply_markup: {
 			keyboard: [
-				[{ text: 'Посмотреть мой профиль' }, { text: 'Отредактировать профиль' },],
+				[{ text: 'Посмотреть мой профиль' }, { text: 'Отредактировать профиль' }],
+				[{ text: 'УДАЛИТЬ профиль' }],
 				[{ text: 'Меню' }],
 			],
 		}
@@ -76,6 +66,13 @@ module.exports = {
 				[{
 					text: 'Страница изменения данных', web_app: { url: webAppUrl + '/form/change' }
 				}],
+			],
+		}
+	},
+	deleteProfile: {
+		reply_markup: {
+			keyboard: [
+				[{ text: 'Да, хочу удалить профиль' }], [{ text: 'Нет, вернуться в меню' }],
 			],
 		}
 	},

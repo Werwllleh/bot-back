@@ -6,7 +6,7 @@ const token = process.env.TOKEN;
 process.env["NTBA_FIX_350"] = 1;
 
 const bot = new TelegramBot(token, { polling: true });
-const { menu, reg, partners, ourcars, searchcar, profile, changeProfile } = require('./keyboards');
+const { menu, reg, partners, ourcars, searchcar, profile, changeProfile, deleteProfile } = require('./keyboards');
 const sequelize = require('./db');
 const Users = require("./models");
 
@@ -181,7 +181,10 @@ async function resizeImage() {
 							.toFormat("jpeg", { mozjpeg: true, quality: 65 })
 							.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", smallCard + "_" + "small.jpeg"));
 					}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1521872 (Release ver.)
 				})
 			});
 
@@ -210,44 +213,72 @@ app.post("/api/upload/remove", async (req, res) => {
 	}
 })
 
-function updateProfile(chatId, curImage) {
-	let curChatId = chatId;
+app.post('/api/change', async (req, res) => {
+	try {
 
-	app.post('/api/change', async (req, res) => {
+		let changedData = req.body.changedData; //получаем новые данные
+		let searchUser = await Users.findOne({ where: { chatId: changedData.curUser } }); //смотрим старые данные в БД
+
 		try {
-
-			let changedData = req.body.changedData;
-
-			await Users.update(
-				{
-					carModel: changedData.car.toLowerCase().trimEnd(),
-					carYear: changedData.carYear.trimEnd(),
-					carGRZ: changedData.carNum.trimEnd(),
-					carNote: changedData.carNote.toLowerCase().trimEnd(),
-					carImage: changedData.carImage,
-				},
-				{
-					where: { chatId: curChatId },
-				}
-			);
-
-			curChatId = '';
-
-			try {
-				if (curImage) {
-					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", curImage), (err) => {
-						if (err) throw err;
-						console.log('file was deleted');
-					});
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		} catch (err) {
-			console.log(err);
+			unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", searchUser.carImage), (err) => {
+				if (err) throw err;
+				console.log('original photo was deleted');
+			});
+			unlink(path.resolve(__dirname, "..", "bot-back/img/users_small", searchUser.carImage + "_" + "small.jpeg"), (err) => {
+				if (err) throw err;
+				console.log('resize photo was deleted');
+			});
+		} catch (error) {
+			console.log(error);
 		}
-	})
-}
+
+		const metadata = sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", changedData.carImage)).metadata();
+
+		metadata.then(function (photoData) {
+
+			let orientationPhoto = photoData.orientation;
+
+			let wPhoto = Math.ceil(photoData.width - (photoData.width * 60) / 100);
+			let hPhoto = Math.ceil(photoData.height - (photoData.height * 60) / 100);
+
+			if (orientationPhoto === 6) {
+				sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", changedData.carImage))
+					.rotate(90)
+					.resize(wPhoto, hPhoto)
+					.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+					.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", changedData.carImage + "_" + "small.jpeg"));
+			} else if (orientationPhoto === 3) {
+				sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", changedData.carImage))
+					.rotate(180)
+					.resize(wPhoto, hPhoto)
+					.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+					.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", changedData.carImage + "_" + "small.jpeg"));
+			} else {
+				sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", changedData.carImage))
+					.resize(wPhoto, hPhoto)
+					.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+					.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", changedData.carImage + "_" + "small.jpeg"));
+			}
+		})
+
+		await Users.update(
+			{
+				carModel: changedData.car.toLowerCase().trimEnd(),
+				carYear: changedData.carYear.trimEnd(),
+				carGRZ: changedData.carNum.trimEnd(),
+				carNote: changedData.carNote.toLowerCase().trimEnd(),
+				carImage: changedData.carImage,
+			},
+			{
+				where: { chatId: changedData.curUser },
+			}
+		);
+
+	} catch (err) {
+		console.log(err);
+	}
+})
+
 
 
 const start = async () => {
@@ -359,23 +390,42 @@ const start = async () => {
 					console.log(error);
 				}
 			} else if (text === "Отредактировать профиль") {
-
-				return bot.sendMessage(
-					chatId,
-					'Раздел в разработке:)'
+				return (
+					bot.sendMessage(
+						chatId,
+						'Перейди, если хочешь изменить данные своего профиля  👇',
+						changeProfile
+					)
 				)
-				// let profile = await Users.findOne({ where: { chatId: chatId } });
-				// let curImage = profile.carImage
-
-				// updateProfile(chatId, curImage);
-
-				// return (
-				// 	bot.sendMessage(
-				// 		chatId,
-				// 		'Перейди, если хочешь изменить данные своего профиля  👇',
-				// 		changeProfile
-				// 	)
-				// )
+			} else if (text === "УДАЛИТЬ профиль") {
+				return (
+					bot.sendMessage(
+						chatId,
+						'Вы уверены?',
+						deleteProfile
+					)
+				)
+			} else if (text === "Да, хочу удалить профиль") {
+				await Users.destroy({
+					where: {
+						chatId: chatId
+					}
+				})
+				return (
+					bot.sendMessage(
+						chatId,
+						`Ваш профиль удален, напишите /start`,
+						menu
+					)
+				)
+			} else if (text === "Нет, вернуться в меню") {
+				return (
+					bot.sendMessage(
+						chatId,
+						`Что тебя интересует?`,
+						menu
+					)
+				)
 			} else if (text === "Меню") {
 				return (
 					bot.sendMessage(
