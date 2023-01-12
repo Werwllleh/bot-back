@@ -402,11 +402,24 @@ const start = async () => {
 					)
 				)
 			} else if (text === "Да, хочу удалить профиль") {
-				await Users.destroy({
-					where: {
-						chatId: chatId
-					}
-				})
+				try {
+					let profile = await Users.findOne({ where: { chatId: chatId } });
+					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage), (err) => {
+						if (err) throw err;
+						console.log('original photo was deleted');
+					});
+					unlink(path.resolve(__dirname, "..", "bot-back/img/users_small", profile.carImage + "_" + "small.jpeg"), (err) => {
+						if (err) throw err;
+						console.log('resize photo was deleted');
+					});
+					await Users.destroy({
+						where: {
+							chatId: chatId
+						}
+					})
+				} catch (error) {
+					console.log(error);
+				}
 				return (
 					bot.sendMessage(
 						chatId,
