@@ -181,10 +181,6 @@ async function resizeImage() {
 							.toFormat("jpeg", { mozjpeg: true, quality: 65 })
 							.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", smallCard + "_" + "small.jpeg"));
 					}
-<<<<<<< HEAD
-
-=======
->>>>>>> 1521872 (Release ver.)
 				})
 			});
 
