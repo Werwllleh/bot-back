@@ -215,17 +215,18 @@ app.post('/api/change', async (req, res) => {
 		let changedData = req.body.changedData; //получаем новые данные
 		let searchUser = await Users.findOne({ where: { chatId: changedData.curUser } }); //смотрим старые данные в БД
 
-		try {
+		if (searchUser.carImage) {
 			unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", searchUser.carImage), (err) => {
-				if (err) throw err;
+				if (err) console.log(err);
 				console.log('original photo was deleted');
 			});
+		}
+
+		if (searchUser.carImage + "_" + "small.jpeg" !== undefined) {
 			unlink(path.resolve(__dirname, "..", "bot-back/img/users_small", searchUser.carImage + "_" + "small.jpeg"), (err) => {
-				if (err) throw err;
-				console.log('resize photo was deleted');
+				if (err) console.log(err);
+				console.log('preview photo was deleted');
 			});
-		} catch (error) {
-			console.log(error);
 		}
 
 		const metadata = sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", changedData.carImage)).metadata();
@@ -259,7 +260,8 @@ app.post('/api/change', async (req, res) => {
 
 		await Users.update(
 			{
-				carModel: changedData.car.toLowerCase().trimEnd(),
+				carbrand: changedData.carbrand,
+				carModel: changedData.carModel,
 				carYear: changedData.carYear.trimEnd(),
 				carGRZ: changedData.carNum.trimEnd(),
 				carNote: changedData.carNote.toLowerCase().trimEnd(),
@@ -288,7 +290,8 @@ const start = async () => {
 	}
 
 	bot.setMyCommands([
-		{ command: '/info', description: 'О клубе' }
+		{ command: '/info', description: 'О клубе' },
+		{ command: '/start', description: 'Обновление/перезапуск бота' },
 	])
 
 	bot.on('message', async (msg) => {
@@ -320,20 +323,40 @@ const start = async () => {
 						`Привет привееет!\nНа связи VW/SK CLUB 21 - крупнейшее автосообщество ваговодов Чувашии☝🏻\n\nМы - одна большая семья, которая держится друг за друга, делится своими радостями и неудачами, а все остальные переживают это, помогают в решении вопроса и поддерживают!\nВсе любят покрасоваться своими ласточками и мы не исключение💥\nВвиду этого у нас стабильно проходят автовстречи, где собирается вся наша дружная семья и обсуждает все события в большом кругу.\nА затем флаги в руки и в конвой.\nМы проезжаем по центральным улицам Чебоксар, чтобы показать нашу активность и дружность.\nНе забудем сказать и про партнеров, которых у нас немало. И этот список постоянно пополняется. От доставки еды до ремонта турбины - огромное количество сфер готовы предоставить клубную скидку для таких умничек и молодцов😂😂\n\nУ тебя нет ВАГа, но ты настоящий фанат немецкого автопрома? Не переживай и приходи на встречу🥰 Мы любим и уважаем каждого участника.\nДумаем, что стало немного понятнее.\nПоэтому чего ждать - добро пожаловать к нам в клуб!!!🎉🎊🎉🎊🎉`
 					)
 				)
-			} else if (text === "Ближайшая встреча") {
+			} else if (text === "КВЕСТ!" | text === "Ближайшая встреча") {
+				await bot.sendLocation(chatId, 56.135323, 47.242850);
 				return (
 					bot.sendMessage(
 						chatId,
-						`До встречи в Новом Году!)`,
+						`Дата: 28/05/2023\nВремя: 20:00\nМесто: ТЦ Карусель`,
 						menu
 					)
 				)
-				// await bot.sendPhoto(chatId, './img/event.jpg');
-				// await bot.sendLocation(chatId, 56.135323, 47.242850);
 				// return (
 				// 	bot.sendMessage(
 				// 		chatId,
-				// 		`Дата: 25/12/2022\nВремя: 20:00\nМесто: ТЦ Карусель`,
+				// 		`Ждем на встрече в мае)`,
+				// 		menu
+				// 	)
+				// )
+				/* 56.135323, 47.242850 */ //карусель
+				/* 56.129276, 47.299828 */ //Фердинанд-моторс
+
+				/* await bot.sendPhoto(chatId, './img/event.jpeg');
+				await bot.sendLocation(chatId, 56.135323, 47.242850);
+				return (
+					bot.sendMessage(
+						chatId,
+						`Дата: 20/05/2023\nВремя: 20:00\nМесто: ТЦ Карусель`,
+						menu
+					)
+				) */
+				// await bot.sendVideo(chatId, './img/preview-quest.mp4', options = { has_spoiler: true });
+				// await bot.sendLocation(chatId, 56.129276, 47.299828);
+				// return (
+				// 	bot.sendMessage(
+				// 		chatId,
+				// 		`Дата: 22/04/2023\nВремя: 12:00\nАдрес: Чебоксары, Марпосадское шоссе, 3Д\nЗдание: Фердинанд Моторс Альянс-авто`,
 				// 		menu
 				// 	)
 				// )
@@ -378,7 +401,7 @@ const start = async () => {
 					return (
 						bot.sendMessage(
 							chatId,
-							`Вы: ${profile.userName}\nВаше авто: ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\n${profile.carNote ? 'Примечание: ' + profile.carNote : ''}`,
+							`Вы: ${profile.userName}\nВаше авто: ${profile.carbrand} ${profile.carModel}\nГод выпуска: ${profile.carYear}\nНомер авто: ${profile.carGRZ}\n${profile.carNote ? 'Примечание: ' + profile.carNote : ''}`,
 							profile
 						)
 					)
@@ -402,24 +425,11 @@ const start = async () => {
 					)
 				)
 			} else if (text === "Да, хочу удалить профиль") {
-				try {
-					let profile = await Users.findOne({ where: { chatId: chatId } });
-					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage), (err) => {
-						if (err) throw err;
-						console.log('original photo was deleted');
-					});
-					unlink(path.resolve(__dirname, "..", "bot-back/img/users_small", profile.carImage + "_" + "small.jpeg"), (err) => {
-						if (err) throw err;
-						console.log('resize photo was deleted');
-					});
-					await Users.destroy({
-						where: {
-							chatId: chatId
-						}
-					})
-				} catch (error) {
-					console.log(error);
-				}
+				await Users.destroy({
+					where: {
+						chatId: chatId
+					}
+				})
 				return (
 					bot.sendMessage(
 						chatId,
@@ -443,8 +453,9 @@ const start = async () => {
 						menu
 					)
 				)
-			} else if (text === "Поддержать клуб") {
-				await bot.sendMessage(chatId, 'Реквизиты карты для перевода:');
+			} else if (text === "Купить клубную наклейку/ароматизатор" | text === "Поддержать клуб") {
+				await bot.sendMessage(chatId, 'Приобретая клубную атрибутику ты помогаешь клубу развиваться и становишься виднее для одноклубников😉\nПо всем вопросам приобретения наклеек и ароматизаторов смело пишите @BivaetITak');
+				await bot.sendMessage(chatId, 'А так же будем рады любой копеечке:');
 				await bot.sendMessage(chatId, '2202 2001 3923 4809');
 				return bot.sendMessage(
 					chatId,
@@ -462,11 +473,12 @@ const start = async () => {
 				await Users.create({
 					chatId: chatId,
 					userName: data.name.trimEnd(),
-					carModel: data.car.toLowerCase().trimEnd(),
+					carModel: data.carModel.toLowerCase().trimEnd(),
 					carYear: data.carYear.trimEnd(),
 					carGRZ: data.carNum.trimEnd(),
 					carNote: data.carNote.toLowerCase().trimEnd(),
-					carImage: data.carImage
+					carImage: data.carImage,
+					carbrand: data.carbrand.toLowerCase().trimEnd(),
 				})
 
 				const metadata = await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage)).metadata();
