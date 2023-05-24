@@ -1,4 +1,6 @@
-const webAppUrl = 'https://92.255.78.177';
+require('dotenv').config();
+
+const webAppUrl = process.env.URL;
 
 // const webAppUrl = 'https://chic-lolly-1605d1.netlify.app';
 
@@ -64,8 +66,16 @@ module.exports = {
 	profile: {
 		reply_markup: {
 			keyboard: [
-				[{ text: 'Посмотреть мой профиль' }, { text: 'Отредактировать профиль' },],
+				[{ text: 'Посмотреть мой профиль' }, { text: 'Отредактировать профиль' }],
+				[{ text: 'УДАЛИТЬ профиль' }],
 				[{ text: 'Меню' }],
+			],
+		}
+	},
+	deleteProfile: {
+		reply_markup: {
+			keyboard: [
+				[{ text: 'Нет, вернуться в меню' }, { text: 'Да, хочу удалить профиль' }],
 			],
 		}
 	},

@@ -260,7 +260,7 @@ app.post('/api/change', async (req, res) => {
 
 		await Users.update(
 			{
-				carbrand: changedData.carbrand,
+				carbrand: changedData.carBrand,
 				carModel: changedData.carModel,
 				carYear: changedData.carYear.trimEnd(),
 				carGRZ: changedData.carNum.trimEnd(),
@@ -425,17 +425,30 @@ const start = async () => {
 					)
 				)
 			} else if (text === "Да, хочу удалить профиль") {
-				await Users.destroy({
-					where: {
-						chatId: chatId
-					}
-				})
-				return (
-					bot.sendMessage(
-						chatId,
-						`Ваш профиль удален, напишите /start`,
-						menu
-					)
+				try {
+					let profile = await Users.findOne({ where: { chatId: chatId } });
+					unlink(path.resolve(__dirname, "..", "bot-back/img/users_cars", profile.carImage), (err) => {
+						if (err) console.log(err);
+					});
+					unlink(path.resolve(__dirname, "..", "bot-back/img/users_small", profile.carImage + "_" + "small.jpeg"), (err) => {
+						if (err) console.log(err);
+					});
+					await Users.destroy({
+						where: {
+							chatId: chatId
+						}
+					})
+				} catch (error) {
+					console.log(error);
+				}
+				await bot.sendMessage(
+					chatId,
+					`Ваш профиль удален, нельзя покидать семью 😢😭`
+				)
+				return bot.sendMessage(
+					chatId,
+					`Пожалуйста пройди регистрацию 🙏`,
+					reg
 				)
 			} else if (text === "Нет, вернуться в меню") {
 				return (
@@ -473,12 +486,12 @@ const start = async () => {
 				await Users.create({
 					chatId: chatId,
 					userName: data.name.trimEnd(),
-					carModel: data.carModel.toLowerCase().trimEnd(),
+					carModel: data.carModel,
 					carYear: data.carYear.trimEnd(),
 					carGRZ: data.carNum.trimEnd(),
 					carNote: data.carNote.toLowerCase().trimEnd(),
 					carImage: data.carImage,
-					carbrand: data.carbrand.toLowerCase().trimEnd(),
+					carbrand: data.carBrand,
 				})
 
 				const metadata = await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage)).metadata();
@@ -490,13 +503,18 @@ const start = async () => {
 					await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage))
 						.rotate(90)
 						.resize(wPhoto, hPhoto)
-						.toFormat("jpeg", { mozjpeg: true, quality: 75 })
+						.toFormat("jpeg", { mozjpeg: true, quality: 65 })
 						.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", data.carImage + "_" + "small.jpeg"));
-				} else if (orientationPhoto === 1 || orientationPhoto === 3) {
+				} else if (orientationPhoto === 3) {
 					await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage))
 						.rotate(180)
 						.resize(wPhoto, hPhoto)
-						.toFormat("jpeg", { mozjpeg: true, quality: 75 })
+						.toFormat("jpeg", { mozjpeg: true, quality: 65 })
+						.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", data.carImage + "_" + "small.jpeg"));
+				} else {
+					await sharp(path.resolve(__dirname, "..", "bot-back/img/users_cars", data.carImage))
+						.resize(wPhoto, hPhoto)
+						.toFormat("jpeg", { mozjpeg: true, quality: 65 })
 						.toFile(path.resolve(__dirname, "..", "bot-back/img/users_small", data.carImage + "_" + "small.jpeg"));
 				}
 

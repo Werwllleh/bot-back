@@ -9,8 +9,8 @@ const Users = sequelize.define('user', {
 	carYear: { type: DataTypes.INTEGER, allowNull: false },
 	carGRZ: { type: DataTypes.STRING, unique: true, allowNull: false },
 	carNote: { type: DataTypes.STRING, allowNull: true },
-	carImage: { type: DataTypes.STRING, allowNull: true },
-	carbrand: { type: DataTypes.STRING, allowNull: true },
+	carImage: { type: DataTypes.STRING, allowNull: false },
+	carbrand: { type: DataTypes.STRING, allowNull: false },
 }, {
 	timestamps: false
 })
